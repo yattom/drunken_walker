@@ -48,24 +48,11 @@ class Board extends React.Component {
     }, []);
   }
 
-  onMouseOver(key) {
-    this.setState({
-      cells: this.state.cells.map((cell) => cell.key === key ? {key: cell.key, x: cell.x, y: cell.y, state: "mouseover"} : cell),
-    });
-  }
-
-  onMouseOut(key) {
-    this.setState({
-      cells: this.state.cells.map((cell) => cell.key === key ? {key: cell.key, x: cell.x, y: cell.y, state: "empty"} : cell),
-    });
-  }
 
   render() {
     const cells = this.state.cells.map((row, idx) => {
       return (
         <Cell key={row.key} x={row.x} y={row.y} state={row.state}
-               onMouseOver={() => this.onMouseOver(row.key)}
-               onMouseOut={() => this.onMouseOut(row.key)}
         />
       )
     });
@@ -77,10 +64,38 @@ class Board extends React.Component {
   }
 }
 
-function Cell(props) {
-  return (
-    <li onMouseOver={props.onMouseOver} onMouseOut={props.onMouseOut}>{props.x},{props.y},{props.state}</li>
-  );
+
+class Cell extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      x: props.x,
+      y: props.y,
+      state: "empty",
+    }
+  }
+
+  onMouseOver() {
+    this.setState({
+      x: this.state.x,
+      y: this.state.y,
+      state: "mouseover",
+    });
+  }
+
+  onMouseOut() {
+    this.setState({
+      x: this.state.x,
+      y: this.state.y,
+      state: "empty",
+    });
+  }
+
+  render() {
+    return (
+    <li onMouseOver={() => this.onMouseOver()} onMouseOut={() => this.onMouseOut()}>{this.state.x},{this.state.y},{this.state.state}</li>
+    );
+  }
 }
 
 export default App;

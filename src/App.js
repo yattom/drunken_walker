@@ -53,7 +53,7 @@ export class Board extends React.Component {
 
 
   render() {
-    const cells = this.state.cells.map((row, idx) => {
+    const cells = this.state.cells.map((row) => {
       return (
         <Cell key={row.key} x={row.x} y={row.y} state={row.state}
         />
@@ -101,4 +101,4 @@ export class Cell extends React.Component {
   }
 }
 
-
+export default App;

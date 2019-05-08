@@ -4,11 +4,11 @@ import { App, Board } from './App';
 
 it('renders without crashing', () => {
   render(<App />);
-})
+});
 
 describe('Board', () => {
   it('renders', () => {
     render(<Board />);
   });
-})
+});
 

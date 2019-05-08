@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+export function App() {
   return (
     <div className="App">
       <header className="App-header">
@@ -24,7 +24,7 @@ function App() {
   );
 }
 
-class Board extends React.Component {
+export class Board extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,6 +35,9 @@ class Board extends React.Component {
     const cells = this.build_cells(5);
     this.state = {
       cells: cells,
+      walkers: [
+        { x: 1, y: 0, color: "R" },
+      ],
     };
   }
 
@@ -65,7 +68,7 @@ class Board extends React.Component {
 }
 
 
-class Cell extends React.Component {
+export class Cell extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,4 +101,4 @@ class Cell extends React.Component {
   }
 }
 
-export default App;
+

@@ -1,18 +1,19 @@
 import React from 'react';
-import { App, Board } from './App';
+import { shallow } from 'enzyme';
+import { App, Board, Cell } from './App';
 
 it('renders without crashing', () => {
-  render(<App />);
+  shallow(<App />);
 });
 
 describe('Board', () => {
   it('renders', () => {
-    render(<Board />);
+    shallow(<Board />);
   });
 
   it('has cells', () => {
-    const { getAllByTestId } = render(<Board />);
-    expect(getAllByTestId(/^cell_/).length).toBe(3 + 4 + 5 + 4 + 3);
+    const wrapper = shallow(<Board />);
+    expect(wrapper.find(Cell).length).toBe(3 + 4 + 5 + 4 + 3);
   });
 
 });

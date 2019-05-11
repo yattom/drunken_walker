@@ -96,7 +96,7 @@ export class Cell extends React.Component {
 
   render() {
     return (
-    <li onMouseOver={() => this.onMouseOver()} onMouseOut={() => this.onMouseOut()}>{this.state.x},{this.state.y},{this.state.state}</li>
+    <li data-testid={"cell_" + this.state.x + "_" + this.state.y} onMouseOver={() => this.onMouseOver()} onMouseOut={() => this.onMouseOut()}>{this.state.x},{this.state.y},{this.state.state}</li>
     );
   }
 }

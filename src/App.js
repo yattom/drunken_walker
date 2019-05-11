@@ -6,7 +6,7 @@ export function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={logo} className="App-logo" alt="logo"/>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
@@ -28,16 +28,16 @@ export class Board extends React.Component {
   constructor(props) {
     super(props);
 
-    // const cells = [
-      // {key: 0, x: 0, y: 0, state: "empty"},
-      // {key: 1, x: 1, y: 0, state: "empty"},
-    // ];
+    this.state = {
+      walkers: [
+        {x: 1, y: 0, color: "R"},
+        {x: 2, y: 0, color: "R"},
+      ],
+    };
     const cells = this.build_cells(5);
     this.state = {
       cells: cells,
-      walkers: [
-        { x: 1, y: 0, color: "R" },
-      ],
+      walkers: this.state.walkers,
     };
   }
 
@@ -46,17 +46,33 @@ export class Board extends React.Component {
     return range(size).reduce((p, c, y) => {
       return p.concat(range(Math.ceil(size / 2) + Math.min(y, size - y - 1)).map((row, base_x) => {
         const x = base_x + Math.max(0, y - Math.floor(size / 2));
-        return {key: "(" + x + "," + y + ")", x: x, y: y, state: "empty"};
+
+        var state = "empty";
+        const content = this.find_content(x, y);
+        if (content) {
+          if (content.type == "walker") {
+            state = content.content.color;
+          }
+        }
+        return {key: "(" + x + "," + y + ")", x: x, y: y, state: state};
       }))
     }, []);
+  }
+
+  find_content(x, y) {
+    const walker = this.state.walkers.filter((w) => (w.x == x && w.y == y))[0];
+    if (walker) {
+      return {type: "walker", content: walker}
+    }
+    return null;
   }
 
 
   render() {
     const cells = this.state.cells.map((row) => {
       return (
-        <Cell key={row.key} x={row.x} y={row.y} state={row.state}
-        />
+        <Cell key={row.key} x={row.x} y={row.y} state={row.state}>
+        </Cell>
       )
     });
     return (
@@ -72,33 +88,40 @@ export class Cell extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      x: props.x,
-      y: props.y,
-      state: "empty",
+      state: props.state,
     }
   }
 
   onMouseOver() {
     this.setState({
-      x: this.state.x,
-      y: this.state.y,
       state: "mouseover",
     });
   }
 
   onMouseOut() {
     this.setState({
-      x: this.state.x,
-      y: this.state.y,
-      state: "empty",
+      state: this.props.state
     });
   }
 
   render() {
     return (
-    <li data-testid={"cell_" + this.state.x + "_" + this.state.y} onMouseOver={() => this.onMouseOver()} onMouseOut={() => this.onMouseOut()}>{this.state.x},{this.state.y},{this.state.state}</li>
+      <li data-testid={"cell_" + this.props.x + "_" + this.props.y} onMouseOver={() => this.onMouseOver()}
+          onMouseOut={() => this.onMouseOut()}>
+        {this.props.x},{this.props.y},{this.state.state}
+        {
+          this.props.state == "R" ? <Walker color={this.props.state}/> : ""
+        }
+      </li>
     );
   }
+}
+
+export class Walker extends React.Component {
+  render() {
+    return <div>Walker {this.props.color}</div>
+  }
+
 }
 
 export default App;

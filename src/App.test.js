@@ -26,10 +26,10 @@ describe('Board', () => {
       expect(walker.parents(Cell).key()).toBe("(1,0)");
       walker.simulate('click');
 
-      const cell_1_1 = wrapper.find(Cell).findWhere(n => n.key() === "(1,1)");
+      const cell_1_1 = wrapper.find(Cell).findWhere(n => n.key() === "(0,0)");
       cell_1_1.simulate('click');
       const walker_after = wrapper.find(Walker).at(0);
-      expect(walker_after.parents(Cell).key()).toBe("(1,1)");
+      expect(walker_after.parents(Cell).key()).toBe("(0,0)");
     });
   });
 });

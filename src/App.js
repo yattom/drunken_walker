@@ -51,6 +51,19 @@ export class Board extends React.Component {
     }, []);
   }
 
+  select_cell(x, y) {
+    const new_walkers = this.state.walkers.map((walker) => {
+      if(walker.state === "selected") {
+        return {x: x, y: y, color: walker.color, state: "unselected"};
+      } else {
+        return {x: walker.x, y: walker.y, color: walker.color, state: walker.state};
+      }
+    });
+    this.setState({
+      walkers: new_walkers,
+    });
+  }
+
   select_walker(x, y) {
     const new_walkers = this.state.walkers.map((walker) => {
       if (walker.x === x && walker.y === y) {
@@ -89,7 +102,7 @@ export class Board extends React.Component {
         }
       }
       return (
-        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker}>
+        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker} onClick={() => {this.select_cell(row.x, row.y);} }>
         </Cell>
       );
     });
@@ -124,8 +137,11 @@ export class Cell extends React.Component {
 
   render() {
     return (
-      <li data-testid={"cell_" + this.props.x + "_" + this.props.y} onMouseOver={() => this.onMouseOver()}
-          onMouseOut={() => this.onMouseOut()}>
+      <li data-testid={"cell_" + this.props.x + "_" + this.props.y}
+          onMouseOver={() => this.onMouseOver()}
+          onMouseOut={() => this.onMouseOut()}
+          onClick={this.props.onClick}
+      >
         {this.props.x},{this.props.y},{this.state.state}
         {
           this.props.content.color === "R" ?
@@ -139,7 +155,8 @@ export class Cell extends React.Component {
 
 export class Walker extends React.Component {
   render() {
-    return <div onClick={() => {
+    return <div onClick={(e) => {
+      e.stopPropagation();
       this.props.onClick();
     }}>Walker {this.props.color} {this.props.state}</div>;
   }

@@ -46,23 +46,23 @@ export class Board extends React.Component {
     return range(size).reduce((p, c, y) => {
       return p.concat(range(Math.ceil(size / 2) + Math.min(y, size - y - 1)).map((row, base_x) => {
         const x = base_x + Math.max(0, y - Math.floor(size / 2));
+        const cell = {key: "(" + x + "," + y + ")", x: x, y: y, state: "empty"};
 
-        var state = "empty";
         const content = this.find_content(x, y);
         if (content) {
           if (content.type == "walker") {
-            state = content.content.color;
+            cell.state = content.content.color;
           }
         }
-        return {key: "(" + x + "," + y + ")", x: x, y: y, state: state};
-      }))
+        return cell;
+      }));
     }, []);
   }
 
   find_content(x, y) {
     const walker = this.state.walkers.filter((w) => (w.x == x && w.y == y))[0];
     if (walker) {
-      return {type: "walker", content: walker}
+      return {type: "walker", content: walker};
     }
     return null;
   }
@@ -73,7 +73,7 @@ export class Board extends React.Component {
       return (
         <Cell key={row.key} x={row.x} y={row.y} state={row.state}>
         </Cell>
-      )
+      );
     });
     return (
       <ul>
@@ -119,7 +119,7 @@ export class Cell extends React.Component {
 
 export class Walker extends React.Component {
   render() {
-    return <div>Walker {this.props.color}</div>
+    return <div>Walker {this.props.color}</div>;
   }
 
 }

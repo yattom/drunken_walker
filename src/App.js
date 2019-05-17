@@ -19,7 +19,7 @@ export function App() {
           Learn React
         </a>
       </header>
-      <Board></Board>
+      <Board />
     </div>
   );
 }

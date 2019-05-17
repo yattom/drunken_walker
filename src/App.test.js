@@ -30,7 +30,7 @@ describe('Board', () => {
       cell_1_1.simulate('click');
       const walker_after = wrapper.find(Walker).at(0);
       expect(walker_after.parents(Cell).key()).toBe("(1,1)");
-    })
+    });
   });
 });
 

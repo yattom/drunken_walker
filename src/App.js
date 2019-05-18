@@ -19,7 +19,7 @@ export function App() {
           Learn React
         </a>
       </header>
-      <Board />
+      <Board/>
     </div>
   );
 }
@@ -52,29 +52,27 @@ export class Board extends React.Component {
   }
 
   select_cell(x, y) {
-    const new_walkers = this.state.walkers.map((walker) => {
-      if(walker.state === "selected") {
-        return {x: x, y: y, color: walker.color, state: "unselected"};
-      } else {
-        return {x: walker.x, y: walker.y, color: walker.color, state: walker.state};
-      }
-    });
-    this.setState({
-      walkers: new_walkers,
-    });
+    this.setState((state) => ({
+      walkers: state.walkers.map((walker) => {
+        if (walker.state === "selected") {
+          return {...walker, x: x, y: y, state: "unselected"};
+        } else {
+          return walker;
+        }
+      })
+    }));
   }
 
   select_walker(x, y) {
-    const new_walkers = this.state.walkers.map((walker) => {
-      if (walker.x === x && walker.y === y) {
-        return {x: walker.x, y: walker.y, color: walker.color, state: "selected"};
-      } else {
-        return {x: walker.x, y: walker.y, color: walker.color, state: walker.state};
-      }
-    });
-    this.setState({
-      walkers: new_walkers,
-    });
+    this.setState((state) => ({
+      walkers: state.walkers.map((walker) => {
+        if (walker.x === x && walker.y === y) {
+          return {...walker, state: "selected"};
+        } else {
+          return walker;
+        }
+      })
+    }));
   }
 
   find_content(x, y) {
@@ -102,7 +100,9 @@ export class Board extends React.Component {
         }
       }
       return (
-        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker} onClick={() => {this.select_cell(row.x, row.y);} }>
+        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker} onClick={() => {
+          this.select_cell(row.x, row.y);
+        }}>
         </Cell>
       );
     });

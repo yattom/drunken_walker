@@ -96,9 +96,11 @@ export class Board extends React.Component {
         }
       }
       return (
-        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker} onClick={() => {
-          this.select_cell(row.x, row.y);
-        }}>
+        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker}
+              onClick={() => {
+                this.select_cell(row.x, row.y);
+              }}
+        >
         </Cell>
       );
     });

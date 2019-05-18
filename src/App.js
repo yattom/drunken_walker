@@ -24,15 +24,15 @@ export function App() {
   );
 }
 
-const DIR = {
-  NW: (x, y) => ({ x: x - 1, y: y - 1}),
-  NE: (x, y) => ({ x: x, y: y - 1}),
-  W: (x, y) => ({ x: x - 1, y: y}),
-  E: (x, y) => ({ x: x + 1, y: y}),
-  SW: (x, y) => ({ x: x, y: y + 1}),
-  SE: (x, y) => ({ x: x + 1, y: y + 1}),
-  ALL: (x, y) => [ DIR.NW, DIR.NE, DIR.W, DIR.E, DIR.SW, DIR.SE ].map(d => d(x, y)),
-};
+class Dir {
+  static nw(x, y) { return { x: x - 1, y: y - 1}; }
+  static ne(x, y) { return { x: x, y: y - 1}; }
+  static w(x, y) { return { x: x - 1, y: y}; }
+  static e(x, y) { return { x: x + 1, y: y}; }
+  static sw(x, y) { return { x: x, y: y + 1}; }
+  static se(x, y) { return { x: x + 1, y: y + 1}; }
+  static all(x, y) { return  [Dir.nw, Dir.ne, Dir.w, Dir.e, Dir.sw, Dir.se ].map(d => d(x, y)); }
+}
 
 export class Board extends React.Component {
   constructor(props) {
@@ -59,7 +59,7 @@ export class Board extends React.Component {
     }, {});
   }
 
-  select_cell(x, y) {
+  move_walker(x, y) {
     const new_cells = {...this.state.cells};
     Object.entries(new_cells).forEach((e) => {
       e[1].state = "empty";
@@ -89,7 +89,7 @@ export class Board extends React.Component {
 
     this.setState((state) => {
       const new_cells = {...state.cells};
-      DIR.ALL(x, y).forEach((v) => {
+      Dir.all(x, y).forEach((v) => {
           const key = `(${v.x},${v.y})`;
           if(new_cells[key]) {
             new_cells[key] = {...new_cells[key], state: "movearea"};
@@ -129,7 +129,7 @@ export class Board extends React.Component {
       return (
         <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker}
               onClick={() => {
-                this.select_cell(row.x, row.y);
+                this.move_walker(row.x, row.y);
               }}
         >
         </Cell>

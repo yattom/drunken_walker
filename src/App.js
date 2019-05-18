@@ -40,11 +40,10 @@ export class Board extends React.Component {
   build_cells(size) {
     const range = (n) => Array.from({length: n}, (v, k) => k);
     return range(size).reduce((p, c, y) => {
-      range(Math.ceil(size / 2) + Math.min(y, size - y - 1)).map((row, base_x) => {
+      range(Math.ceil(size / 2) + Math.min(y, size - y - 1)).forEach((row, base_x) => {
         const x = base_x + Math.max(0, y - Math.floor(size / 2));
         const key = `(${x},${y})`;
         p[key] = {key: key, x: x, y: y, state: "empty"};
-        return null;
       });
       return p;
     }, {});

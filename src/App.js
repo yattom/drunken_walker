@@ -29,15 +29,11 @@ export class Board extends React.Component {
     super(props);
 
     this.state = {
+      cells: this.build_cells(5),
       walkers: [
         {x: 1, y: 0, color: "R", state: "unselected"},
         {x: 2, y: 0, color: "R", state: "unselected"},
       ],
-    };
-    const cells = this.build_cells(5);
-    this.state = {
-      cells: cells,
-      walkers: this.state.walkers,
     };
   }
 

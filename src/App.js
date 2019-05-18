@@ -40,11 +40,14 @@ export class Board extends React.Component {
   build_cells(size) {
     const range = (n) => Array.from({length: n}, (v, k) => k);
     return range(size).reduce((p, c, y) => {
-      return p.concat(range(Math.ceil(size / 2) + Math.min(y, size - y - 1)).map((row, base_x) => {
+      range(Math.ceil(size / 2) + Math.min(y, size - y - 1)).map((row, base_x) => {
         const x = base_x + Math.max(0, y - Math.floor(size / 2));
-        return {key: "(" + x + "," + y + ")", x: x, y: y, state: "empty"};
-      }));
-    }, []);
+        const key = `(${x},${y})`;
+        p[key] = {key: key, x: x, y: y, state: "empty"};
+        return null;
+      });
+      return p;
+    }, {});
   }
 
   select_cell(x, y) {
@@ -81,7 +84,8 @@ export class Board extends React.Component {
 
 
   render() {
-    const cells = this.state.cells.map((row) => {
+    const cells = Object.entries(this.state.cells).map(entry => {
+      const row = entry[1];
       let walker = {};
       const content = this.find_content(row.x, row.y);
       if (content) {

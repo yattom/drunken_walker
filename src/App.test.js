@@ -2,6 +2,10 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import {App, Board, Cell, Walker } from './App';
 
+function find_cell(wrapper, x, y) {
+  return wrapper.find(Cell).findWhere(n => n.key() === `(${x},${y})`);
+}
+
 it('renders without crashing', () => {
   shallow(<App/>);
 });
@@ -41,6 +45,38 @@ describe('playing game', () => {
       cell_0_0.simulate('click');
       const walker_after = wrapper.find(Walker).at(0);
       expect(walker_after.parents(Cell).key()).toBe("(0,0)");
+    });
+
+    it('show move area from (1,0)', () => {
+      const wrapper = mount(<Board/>);
+      const walker = wrapper.find(Walker).at(0);
+      walker.simulate('click');
+
+      expect(find_cell(wrapper, 0, 0).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 0, 2).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 1, 1).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 2, 1).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 1, 0).text()).toEqual(expect.not.stringContaining("movearea"));
+      expect(find_cell(wrapper, 0, 1).text()).toEqual(expect.not.stringContaining("movearea"));
+      expect(find_cell(wrapper, 2, 2).text()).toEqual(expect.not.stringContaining("movearea"));
+    });
+
+    it('show move area from (2,2)', () => {
+      const wrapper = mount(<Board/>);
+      const walker = wrapper.find(Walker).at(0);
+      walker.simulate('click');
+      find_cell(wrapper, 2, 2).simulate('click');
+      wrapper.find(Walker).at(1).simulate('click');
+
+      expect(find_cell(wrapper, 1, 1).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 2, 1).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 1, 2).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 3, 2).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 2, 3).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 3, 3).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 2, 2).text()).toEqual(expect.not.stringContaining("movearea"));
+      expect(find_cell(wrapper, 0, 0).text()).toEqual(expect.not.stringContaining("movearea"));
+      expect(find_cell(wrapper, 0, 1).text()).toEqual(expect.not.stringContaining("movearea"));
     });
   });
 });

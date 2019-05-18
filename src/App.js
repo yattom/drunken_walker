@@ -71,6 +71,17 @@ export class Board extends React.Component {
         }
       })
     }));
+
+    this.setState((state) => {
+      const new_cells = {...state.cells};
+      new_cells["(0,0)"] = {...new_cells["(0,0)"], state: "movearea"};
+      new_cells["(0,2)"] = {...new_cells["(0,2)"], state: "movearea"};
+      new_cells["(1,1)"] = {...new_cells["(1,1)"], state: "movearea"};
+      new_cells["(2,1)"] = {...new_cells["(2,1)"], state: "movearea"};
+      return {
+        cells: new_cells
+      };
+    });
   }
 
   find_content(x, y) {
@@ -120,7 +131,7 @@ export class Cell extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      state: props.state,
+      state: null
     };
   }
 
@@ -132,7 +143,7 @@ export class Cell extends React.Component {
 
   onMouseOut() {
     this.setState({
-      state: this.props.state
+      state: null
     });
   }
 
@@ -143,7 +154,7 @@ export class Cell extends React.Component {
           onMouseOut={() => this.onMouseOut()}
           onClick={this.props.onClick}
       >
-        {this.props.x},{this.props.y},{this.state.state}
+        {this.props.x},{this.props.y},{this.state.state ? this.state.state : this.props.state},{this.state.count}
         {
           this.props.content.color === "R" ?
             <Walker onClick={this.props.content.onClick} color={this.props.content.color}

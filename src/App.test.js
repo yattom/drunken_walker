@@ -53,7 +53,7 @@ describe('playing game', () => {
       walker.simulate('click');
 
       expect(find_cell(wrapper, 0, 0).text()).toEqual(expect.stringContaining("movearea"));
-      expect(find_cell(wrapper, 0, 2).text()).toEqual(expect.stringContaining("movearea"));
+      expect(find_cell(wrapper, 2, 0).text()).toEqual(expect.stringContaining("movearea"));
       expect(find_cell(wrapper, 1, 1).text()).toEqual(expect.stringContaining("movearea"));
       expect(find_cell(wrapper, 2, 1).text()).toEqual(expect.stringContaining("movearea"));
       expect(find_cell(wrapper, 1, 0).text()).toEqual(expect.not.stringContaining("movearea"));
@@ -65,6 +65,8 @@ describe('playing game', () => {
       const wrapper = mount(<Board/>);
       const walker = wrapper.find(Walker).at(0);
       walker.simulate('click');
+      find_cell(wrapper, 1, 1).simulate('click');
+      wrapper.find(Walker).at(1).simulate('click');
       find_cell(wrapper, 2, 2).simulate('click');
       wrapper.find(Walker).at(1).simulate('click');
 
@@ -77,6 +79,7 @@ describe('playing game', () => {
       expect(find_cell(wrapper, 2, 2).text()).toEqual(expect.not.stringContaining("movearea"));
       expect(find_cell(wrapper, 0, 0).text()).toEqual(expect.not.stringContaining("movearea"));
       expect(find_cell(wrapper, 0, 1).text()).toEqual(expect.not.stringContaining("movearea"));
+      expect(find_cell(wrapper, 1, 0).text()).toEqual(expect.not.stringContaining("movearea"));
     });
   });
 });

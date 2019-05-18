@@ -24,6 +24,16 @@ export function App() {
   );
 }
 
+const DIR = {
+  NW: (x, y) => ({ x: x - 1, y: y - 1}),
+  NE: (x, y) => ({ x: x, y: y - 1}),
+  W: (x, y) => ({ x: x - 1, y: y}),
+  E: (x, y) => ({ x: x + 1, y: y}),
+  SW: (x, y) => ({ x: x, y: y + 1}),
+  SE: (x, y) => ({ x: x + 1, y: y + 1}),
+  ALL: (x, y) => [ DIR.NW, DIR.NE, DIR.W, DIR.E, DIR.SW, DIR.SE ].map(d => d(x, y)),
+};
+
 export class Board extends React.Component {
   constructor(props) {
     super(props);
@@ -50,6 +60,10 @@ export class Board extends React.Component {
   }
 
   select_cell(x, y) {
+    const new_cells = {...this.state.cells};
+    Object.entries(new_cells).forEach((e) => {
+      e[1].state = "empty";
+    });
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {
         if (walker.state === "selected") {
@@ -57,7 +71,8 @@ export class Board extends React.Component {
         } else {
           return walker;
         }
-      })
+      }),
+      cells: new_cells,
     }));
   }
 
@@ -74,10 +89,12 @@ export class Board extends React.Component {
 
     this.setState((state) => {
       const new_cells = {...state.cells};
-      new_cells["(0,0)"] = {...new_cells["(0,0)"], state: "movearea"};
-      new_cells["(0,2)"] = {...new_cells["(0,2)"], state: "movearea"};
-      new_cells["(1,1)"] = {...new_cells["(1,1)"], state: "movearea"};
-      new_cells["(2,1)"] = {...new_cells["(2,1)"], state: "movearea"};
+      DIR.ALL(x, y).forEach((v) => {
+          const key = `(${v.x},${v.y})`;
+          if(new_cells[key]) {
+            new_cells[key] = {...new_cells[key], state: "movearea"};
+          }
+      });
       return {
         cells: new_cells
       };

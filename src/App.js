@@ -132,6 +132,11 @@ export class Board extends React.Component {
                 this.move_walker(row.x, row.y);
               }}
         >
+          {
+            walker.color === "R" ?
+              <Walker onClick={walker.onClick} color={walker.color}
+                      state={walker.state}/> : ""
+          }
         </Cell>
       );
     });
@@ -172,11 +177,7 @@ export class Cell extends React.Component {
           onClick={this.props.onClick}
       >
         {this.props.x},{this.props.y},{this.state.state ? this.state.state : this.props.state},{this.state.count}
-        {
-          this.props.content.color === "R" ?
-            <Walker onClick={this.props.content.onClick} color={this.props.content.color}
-                    state={this.props.content.state}/> : ""
-        }
+        {this.props.children}
       </li>
     );
   }

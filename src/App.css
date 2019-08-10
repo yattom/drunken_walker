@@ -31,3 +31,15 @@
     transform: rotate(360deg);
   }
 }
+
+li.empty::after {
+  content: "empty"
+}
+
+li.movearea::after {
+  content: "movearea"
+}
+
+li.mouseover::after {
+  content: "mouseover"
+}

@@ -58,7 +58,7 @@ describe('playing game', () => {
     it('show move area from (1,0)', () => {
       get_walker(0).simulate('click');
 
-      expect(wrapper.find(Cell).map((c) => c.text().includes("movearea") ? "o" : "_")).toEqual(
+      expect(wrapper.find(Cell).map((c) => c.find('li').hasClass("movearea") ? "o" : "_")).toEqual(
         [
               "o", "_", "o",
             "_", "o", "o", "_",
@@ -76,7 +76,7 @@ describe('playing game', () => {
       find_cell(wrapper, 2, 2).simulate('click');
       get_walker(1).simulate('click');
 
-      expect(wrapper.find(Cell).map((c) => c.text().includes("movearea") ? "o" : "_")).toEqual(
+      expect(wrapper.find(Cell).map((c) => c.find('li').hasClass("movearea") ? "o" : "_")).toEqual(
         [
               "_", "_", "_",
             "_", "o", "o", "_",

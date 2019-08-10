@@ -170,13 +170,24 @@ export class Cell extends React.Component {
   }
 
   render() {
+    let classes = [];
+    if(this.props.state == 'empty') {
+      classes.push('empty');
+    }
+    if(this.props.state == 'movearea') {
+      classes.push('movearea');
+    }
+    if(this.state.state == 'mouseover') {
+      classes.push('mouseover');
+    }
     return (
       <li data-testid={"cell_" + this.props.x + "_" + this.props.y}
           onMouseOver={() => this.onMouseOver()}
           onMouseOut={() => this.onMouseOut()}
           onClick={this.props.onClick}
+          className={classes.join(' ')}
       >
-        {this.props.x},{this.props.y},{this.state.state ? this.state.state : this.props.state},{this.state.count}
+        {this.props.x},{this.props.y}
         {this.props.children}
       </li>
     );

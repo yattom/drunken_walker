@@ -62,7 +62,8 @@ export class Board extends React.Component {
   move_walker(x, y) {
     const new_cells = {...this.state.cells};
     Object.entries(new_cells).forEach((e) => {
-      e[1].state = "empty";
+      const value = e[1];
+      value.state = "empty";
     });
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {

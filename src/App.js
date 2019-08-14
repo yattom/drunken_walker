@@ -36,6 +36,17 @@ class Dir {
   //@formatter:off
 }
 
+const Model = {
+  Walker: class {
+    constructor(x, y, color, state) {
+      this.x = x;
+      this.y = y;
+      this.color = color;
+      this.state = state;
+    }
+  }
+};
+
 export class Board extends React.Component {
   constructor(props) {
     super(props);
@@ -43,8 +54,8 @@ export class Board extends React.Component {
     this.state = {
       cells: this.build_cells(5),
       walkers: [
-        {x: 1, y: 0, color: "R", state: "unselected"},
-        {x: 2, y: 0, color: "R", state: "unselected"},
+        new Model.Walker(1, 0, "R", "unselected"),
+        new Model.Walker(2, 0, "R", "unselected"),
       ],
     };
   }

@@ -44,7 +44,30 @@ const Model = {
       this.color = color;
       this.state = state;
     }
-  }
+  },
+
+  Cell: class {
+    constructor(key, x, y, state) {
+      this.key = key;
+      this.x = x;
+      this.y = y;
+      this.state = state;
+
+    }
+  },
+
+  build_cells: function(size) {
+    const range = (n) => Array.from({length: n}, (v, k) => k);
+    return range(size).reduce((p, c, y) => {
+      range(Math.ceil(size / 2) + Math.min(y, size - y - 1)).forEach((row, base_x) => {
+        const x = base_x + Math.max(0, y - Math.floor(size / 2));
+        const key = `(${x},${y})`;
+        p[key] = new Model.Cell(key, x, y, "empty");
+      });
+      return p;
+    }, {});
+  },
+
 };
 
 export class Board extends React.Component {
@@ -52,24 +75,12 @@ export class Board extends React.Component {
     super(props);
 
     this.state = {
-      cells: this.build_cells(5),
+      cells: Model.build_cells(5),
       walkers: [
         new Model.Walker(1, 0, "R", "unselected"),
         new Model.Walker(2, 0, "R", "unselected"),
       ],
     };
-  }
-
-  build_cells(size) {
-    const range = (n) => Array.from({length: n}, (v, k) => k);
-    return range(size).reduce((p, c, y) => {
-      range(Math.ceil(size / 2) + Math.min(y, size - y - 1)).forEach((row, base_x) => {
-        const x = base_x + Math.max(0, y - Math.floor(size / 2));
-        const key = `(${x},${y})`;
-        p[key] = {key: key, x: x, y: y, state: "empty"};
-      });
-      return p;
-    }, {});
   }
 
   move_walker(x, y) {

@@ -25,6 +25,7 @@ export function App() {
 }
 
 class Dir {
+  //@formatter:off
   static nw(x, y) { return { x: x - 1, y: y - 1}; }
   static ne(x, y) { return { x: x, y: y - 1}; }
   static w(x, y) { return { x: x - 1, y: y}; }
@@ -32,6 +33,7 @@ class Dir {
   static sw(x, y) { return { x: x, y: y + 1}; }
   static se(x, y) { return { x: x + 1, y: y + 1}; }
   static all(x, y) { return  [Dir.nw, Dir.ne, Dir.w, Dir.e, Dir.sw, Dir.se ].map(d => d(x, y)); }
+  //@formatter:off
 }
 
 export class Board extends React.Component {

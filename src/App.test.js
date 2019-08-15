@@ -57,20 +57,27 @@ describe('playing game', () => {
 
     describe('movearea are correct', function () {
       function dump_cell(ofClass) {
-        return wrapper.find(Cell).map((c) => c.find('li').hasClass(ofClass) ? "o" : "_");
+        const cells = wrapper.find(Cell).map((c) => c.find('li').hasClass(ofClass) ? "o" : "_");
+        expect(cells.length).toEqual(19);
+        let dump = [];
+        dump[0] = "  " + cells[0] + " " + cells[1] + " " + cells[2] + "  ";
+        dump[1] = " " + cells[3] + " " + cells[4] + " " + cells[5] + " " + cells[6] + " ";
+        dump[2] = "" + cells[7] + " " + cells[8] + " " + cells[9] + " " + cells[10] + " " + cells[11] + "";
+        dump[3] = " " + cells[12] + " " + cells[13] + " " + cells[14] + " " + cells[15] + " ";
+        dump[4] = "  " + cells[16] + " " + cells[17] + " " + cells[18] + "  ";
+        return dump;
       }
 
       it('show move area from (1,0)', () => {
         get_walker(0).simulate('click');
 
-        // expect(wrapper.find(Cell).map((c) => c.find('li').hasClass("movearea") ? "o" : "_")).toEqual(
-          expect(dump_cell("movearea")).toEqual(
+        expect(dump_cell("movearea")).toEqual(
           [
-            "o", "_", "o",
-            "_", "o", "o", "_",
-            "_", "_", "_", "_", "_",
-            "_", "_", "_", "_",
-            "_", "_", "_"
+            "  o _ o  ",
+            " _ o o _ ",
+            "_ _ _ _ _",
+            " _ _ _ _ ",
+            "  _ _ _  ",
           ]
         );
       });
@@ -82,13 +89,13 @@ describe('playing game', () => {
         find_cell(wrapper, 2, 2).simulate('click');
         get_walker(1).simulate('click');
 
-        expect(wrapper.find(Cell).map((c) => c.find('li').hasClass("movearea") ? "o" : "_")).toEqual(
+        expect(dump_cell("movearea")).toEqual(
           [
-            "_", "_", "_",
-            "_", "o", "o", "_",
-            "_", "o", "_", "o", "_",
-            "_", "o", "o", "_",
-            "_", "_", "_"
+            "  _ _ _  ",
+            " _ o o _ ",
+            "_ o _ o _",
+            " _ o o _ ",
+            "  _ _ _  ",
           ]
         );
       });

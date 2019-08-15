@@ -114,8 +114,10 @@ describe('playing game', () => {
       });
 
       it('after selecting a walker, clicking an cell unselects the walker', () => {
+        const pos = get_walker("R01").parents(Cell).key();
         get_walker("R01").simulate('click');
         find_cell(wrapper, 3, 3).simulate('click');
+        expect(get_walker("R01").parents(Cell).key()).toBe(pos);
         expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toEqual(0);
       });
 

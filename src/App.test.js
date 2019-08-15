@@ -89,7 +89,13 @@ describe('playing game', () => {
 
     it('clicking an empty cell does not select a walker', () => {
       find_cell(wrapper, 3, 3).simulate('click');
-      expect(wrapper.find(Cell).filter((c) => c.find('li').hasClass("movearea")).length).toEqual(0);
+      expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toEqual(0);
+    });
+
+    it('clicking an walker does select a walker', () => {
+      const walker = get_walker(0);
+      walker.simulate('click');
+      expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toBeGreaterThan(0);
     });
 
 

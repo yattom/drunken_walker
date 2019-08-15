@@ -38,20 +38,20 @@ describe('playing game', () => {
     wrapper = mount(<Board/>);
   });
 
-  function get_walker(idx) {
-    return wrapper.find(Walker).at(idx);
+  function get_walker(name) {
+    return wrapper.find(Walker).filterWhere((w) => w.props().name === name).at(0);
   }
 
   describe('moving walker', function () {
     it('select piece and move', () => {
       expect(wrapper.find(Walker).length).toBe(2);
-      const walker = get_walker(0);
+      const walker = get_walker("R01");
       expect(walker.parents(Cell).key()).toBe("(1,0)");
       walker.simulate('click');
 
       const cell_0_0 = wrapper.find(Cell).findWhere(n => n.key() === "(0,0)");
       cell_0_0.simulate('click');
-      const walker_after = get_walker(0);
+      const walker_after = get_walker("R01");
       expect(walker_after.parents(Cell).key()).toBe("(0,0)");
     });
 
@@ -69,7 +69,7 @@ describe('playing game', () => {
       }
 
       it('show move area from (1,0)', () => {
-        get_walker(0).simulate('click');
+        get_walker("R01").simulate('click');
 
         expect(dump_cell("movearea")).toEqual(
           [
@@ -83,11 +83,11 @@ describe('playing game', () => {
       });
 
       it('show move area from (2,2)', () => {
-        get_walker(0).simulate('click');
+        get_walker("R01").simulate('click');
         find_cell(wrapper, 1, 1).simulate('click');
-        get_walker(1).simulate('click');
+        get_walker("R01").simulate('click');
         find_cell(wrapper, 2, 2).simulate('click');
-        get_walker(1).simulate('click');
+        get_walker("R01").simulate('click');
 
         expect(dump_cell("movearea")).toEqual(
           [
@@ -100,19 +100,39 @@ describe('playing game', () => {
         );
       });
     });
-  });
 
-  describe('selecting walker for moving', function () {
+    describe('selecting walker for moving', function () {
 
-    it('clicking an empty cell does not select a walker', () => {
-      find_cell(wrapper, 3, 3).simulate('click');
-      expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toEqual(0);
+      it('clicking an empty cell does not select a walker', () => {
+        find_cell(wrapper, 3, 3).simulate('click');
+        expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toEqual(0);
+      });
+
+      it('clicking an walker does select a walker', () => {
+        get_walker("R01").simulate('click');
+        expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toBeGreaterThan(0);
+      });
+
+      it('after selecting a walker, clicking an cell unselects the walker', () => {
+        get_walker("R01").simulate('click');
+        find_cell(wrapper, 3, 3).simulate('click');
+        expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toEqual(0);
+      });
+
     });
 
-    it('clicking an walker does select a walker', () => {
-      const walker = get_walker(0);
-      walker.simulate('click');
-      expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toBeGreaterThan(0);
+    describe('uncertainty based scenario tests', function () {
+      it('select a walker, unselect it, select another walker then move', () => {
+        expect(get_walker("R01").parents(Cell).key()).toBe("(1,0)");
+        expect(get_walker("R02").parents(Cell).key()).toBe("(2,0)");
+        get_walker("R01").simulate('click');
+        find_cell(wrapper, 3, 3).simulate('click');
+        get_walker("R02").simulate('click');
+        find_cell(wrapper, 3, 1).simulate('click');
+        expect(get_walker("R01").parents(Cell).key()).toBe("(1,0)");
+        expect(get_walker("R02").parents(Cell).key()).toBe("(3,1)");
+      });
+
     });
   });
 

@@ -38,7 +38,8 @@ class Dir {
 
 const Model = {
   Walker: class {
-    constructor(x, y, color, state) {
+    constructor(name, x, y, color, state) {
+      this.name = name;
       this.x = x;
       this.y = y;
       this.color = color;
@@ -46,11 +47,11 @@ const Model = {
     }
 
     moved(x, y) {
-      return new Model.Walker(x, y, this.color, "unselected");
+      return new Model.Walker(this.name, x, y, this.color, "unselected");
     }
 
     selected() {
-      return new Model.Walker(this.x, this.y, this.color, "selected");
+      return new Model.Walker(this.name, this.x, this.y, this.color, "selected");
     }
   },
 
@@ -85,8 +86,8 @@ export class Board extends React.Component {
     this.state = {
       cells: Model.build_cells(5),
       walkers: [
-        new Model.Walker(1, 0, "R", "unselected"),
-        new Model.Walker(2, 0, "R", "unselected"),
+        new Model.Walker("R01", 1, 0, "R", "unselected"),
+        new Model.Walker("R02", 2, 0, "R", "unselected"),
       ],
     };
   }
@@ -153,6 +154,7 @@ export class Board extends React.Component {
           walker = {
             color: content.content.color,
             state: content.content.state,
+            name: content.content.name,
             onClick: () => {
               this.select_walker(row.x, row.y);
             }
@@ -167,7 +169,7 @@ export class Board extends React.Component {
         >
           {
             walker.color === "R" ?
-              <Walker onClick={walker.onClick} color={walker.color}
+              <Walker onClick={walker.onClick} color={walker.color} name={walker.name}
                       state={walker.state}/> : ""
           }
         </Cell>

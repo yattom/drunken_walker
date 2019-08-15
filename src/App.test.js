@@ -21,11 +21,11 @@ describe('Board', () => {
       expect(wrapper.find(Cell).length).toBe(3 + 4 + 5 + 4 + 3);
       expect(wrapper.find(Cell).map((c) => c.key())).toEqual(
         [
-                   "(0,0)", "(1,0)", "(2,0)",
-              "(0,1)", "(1,1)", "(2,1)", "(3,1)",
+          "(0,0)", "(1,0)", "(2,0)",
+          "(0,1)", "(1,1)", "(2,1)", "(3,1)",
           "(0,2)", "(1,2)", "(2,2)", "(3,2)", "(4,2)",
-              "(1,3)", "(2,3)", "(3,3)", "(4,3)",
-                  "(2,4)", "(3,4)", "(4,4)",
+          "(1,3)", "(2,3)", "(3,3)", "(4,3)",
+          "(2,4)", "(3,4)", "(4,4)",
         ]
       );
     });
@@ -55,37 +55,47 @@ describe('playing game', () => {
       expect(walker_after.parents(Cell).key()).toBe("(0,0)");
     });
 
-    it('show move area from (1,0)', () => {
-      get_walker(0).simulate('click');
+    describe('movearea are correct', function () {
+      function dump_cell(ofClass) {
+        return wrapper.find(Cell).map((c) => c.find('li').hasClass(ofClass) ? "o" : "_");
+      }
 
-      expect(wrapper.find(Cell).map((c) => c.find('li').hasClass("movearea") ? "o" : "_")).toEqual(
-        [
-              "o", "_", "o",
+      it('show move area from (1,0)', () => {
+        get_walker(0).simulate('click');
+
+        // expect(wrapper.find(Cell).map((c) => c.find('li').hasClass("movearea") ? "o" : "_")).toEqual(
+          expect(dump_cell("movearea")).toEqual(
+          [
+            "o", "_", "o",
             "_", "o", "o", "_",
-          "_", "_", "_", "_", "_",
+            "_", "_", "_", "_", "_",
             "_", "_", "_", "_",
-              "_", "_", "_"
-        ]
-      );
-    });
+            "_", "_", "_"
+          ]
+        );
+      });
 
-    it('show move area from (2,2)', () => {
-      get_walker(0).simulate('click');
-      find_cell(wrapper, 1, 1).simulate('click');
-      get_walker(1).simulate('click');
-      find_cell(wrapper, 2, 2).simulate('click');
-      get_walker(1).simulate('click');
+      it('show move area from (2,2)', () => {
+        get_walker(0).simulate('click');
+        find_cell(wrapper, 1, 1).simulate('click');
+        get_walker(1).simulate('click');
+        find_cell(wrapper, 2, 2).simulate('click');
+        get_walker(1).simulate('click');
 
-      expect(wrapper.find(Cell).map((c) => c.find('li').hasClass("movearea") ? "o" : "_")).toEqual(
-        [
-              "_", "_", "_",
+        expect(wrapper.find(Cell).map((c) => c.find('li').hasClass("movearea") ? "o" : "_")).toEqual(
+          [
+            "_", "_", "_",
             "_", "o", "o", "_",
-          "_", "o", "_", "o", "_",
+            "_", "o", "_", "o", "_",
             "_", "o", "o", "_",
-              "_", "_", "_"
-        ]
-      );
+            "_", "_", "_"
+          ]
+        );
+      });
     });
+  });
+
+  describe('selecting walker for moving', function () {
 
     it('clicking an empty cell does not select a walker', () => {
       find_cell(wrapper, 3, 3).simulate('click');
@@ -97,8 +107,7 @@ describe('playing game', () => {
       walker.simulate('click');
       expect(wrapper.find(Cell).filterWhere((c) => c.find('li').hasClass("movearea")).length).toBeGreaterThan(0);
     });
-
-
   });
+
 });
 

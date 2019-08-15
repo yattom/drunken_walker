@@ -44,6 +44,14 @@ const Model = {
       this.color = color;
       this.state = state;
     }
+
+    moved(x, y) {
+      return new Model.Walker(x, y, this.color, "unselected");
+    }
+
+    selected() {
+      return new Model.Walker(this.x, this.y, this.color, "selected");
+    }
   },
 
   Cell: class {
@@ -92,7 +100,7 @@ export class Board extends React.Component {
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {
         if (walker.state === "selected") {
-          return {...walker, x: x, y: y, state: "unselected"};
+          return walker.moved(x, y);
         } else {
           return walker;
         }
@@ -105,7 +113,7 @@ export class Board extends React.Component {
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {
         if (walker.x === x && walker.y === y) {
-          return {...walker, state: "selected"};
+          return walker.selected();
         } else {
           return walker;
         }

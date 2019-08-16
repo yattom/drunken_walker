@@ -140,16 +140,11 @@ export class Board extends React.Component {
 
   select_walker(x, y) {
     let walker_name = "";
-    this.setState((state) => ({
-      walkers: state.walkers.map((walker) => {
-        if (walker.x === x && walker.y === y) {
-          walker_name = walker.name;
-          return walker;
-        } else {
-          return walker;
-        }
-      }),
-    }));
+    this.state.walkers.forEach((walker) => {
+      if (walker.x === x && walker.y === y) {
+        walker_name = walker.name;
+      }
+    });
 
     this.setState((state) => {
       const new_cells = {...state.cells};
@@ -160,9 +155,10 @@ export class Board extends React.Component {
             new_cells[key] = new_cells[key].movearea_ed();
           }
       });
+      const movearea = Dir.all(x, y).reduce((p, c) => { p[[c.x, c.y]] = 1; return p; }, {});
       return {
         cells: new_cells,
-        selection: {x: x, y: y, walker_name: walker_name},
+        selection: {x: x, y: y, walker_name: walker_name, movearea: movearea},
       };
     });
   }
@@ -180,6 +176,12 @@ export class Board extends React.Component {
     const cells = Object.entries(this.state.cells).map(entry => {
       const row = entry[1];
       let walker_props = {};
+      let state = "empty";
+      if (this.state.selection) {
+        if (this.state.selection.movearea[[row.x, row.y]]) {
+          state = "movearea";
+        }
+      }
       const content = this.find_content(row.x, row.y);
       if (content) {
         if (content.type === "walker") {
@@ -194,7 +196,7 @@ export class Board extends React.Component {
         }
       }
       return (
-        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker_props}
+        <Cell key={row.key} x={row.x} y={row.y} state={state} content={walker_props}
               onClick={() => {
                 this.move_walker(row.x, row.y);
               }}

@@ -80,16 +80,6 @@ export const Model = {
       return p;
     }, {});
   },
-
-  empty_cells: function(cells) {
-    const new_cells = {};
-    Object.entries(cells).forEach((e) => {
-      const key = e[0];
-      const cell = e[1];
-      new_cells[key] = cell.emptied();
-    });
-    return new_cells;
-  }
 };
 
 export class Board extends React.Component {

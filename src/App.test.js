@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow, mount} from 'enzyme';
-import {App, Board, Cell, Walker} from './App';
+import {App, Model, Board, Cell, Walker} from './App';
 
 function find_cell(wrapper, x, y) {
   return wrapper.find(Cell).findWhere(n => n.key() === `(${x},${y})`);
@@ -140,3 +140,14 @@ describe('playing game', () => {
 
 });
 
+
+describe('Model', function() {
+  it('Model.Walker is immutable', function() {
+    const sut = new Model.Walker("dummy", 0, 0);
+    expect(() => {sut.x = -1;}).toThrow();
+  });
+  it('Model.Cell is immutable', function() {
+    const sut = new Model.Cell("key", 0, 0, "empty");
+    expect(() => {sut.x = -1;}).toThrow();
+  });
+});

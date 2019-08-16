@@ -36,13 +36,14 @@ class Dir {
   //@formatter:off
 }
 
-const Model = {
+export const Model = {
   Walker: class {
     constructor(name, x, y, color) {
       this.name = name;
       this.x = x;
       this.y = y;
       this.color = color;
+      Object.freeze(this);
     }
 
     moved(x, y) {
@@ -56,7 +57,15 @@ const Model = {
       this.x = x;
       this.y = y;
       this.state = state;
+      Object.freeze(this);
+    }
 
+    emptied() {
+      return new Model.Cell(this.key, this.x, this.y, "empty");
+    }
+
+    movearea_ed() {
+      return new Model.Cell(this.key, this.x, this.y, "movearea");
     }
   },
 
@@ -102,28 +111,23 @@ export class Board extends React.Component {
       }
     });
     if(!movable) {
-      const new_cells = {...this.state.cells};
-      Object.entries(new_cells).forEach((e) => {
+      const new_cells = {};
+      Object.entries(this.state.cells).forEach((e) => {
+        const key = e[0];
         const cell = e[1];
-        cell.state = "empty";
+        new_cells[key] = cell.emptied();
       });
       this.setState((state) => ({
-        walkers: state.walkers.map((walker) => {
-          if (walker.name === this.state.selection.walker_name) {
-            return walker;
-          } else {
-            return walker;
-          }
-        }),
         cells: new_cells,
         selection: null,
       }));
       return;
     }
-    const new_cells = {...this.state.cells};
-    Object.entries(new_cells).forEach((e) => {
+    const new_cells = {};
+    Object.entries(this.state.cells).forEach((e) => {
+      const key = e[0];
       const cell = e[1];
-      cell.state = "empty";
+      new_cells[key] = cell.emptied();
     });
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {
@@ -155,7 +159,8 @@ export class Board extends React.Component {
       Dir.all(x, y).forEach((v) => {
           const key = `(${v.x},${v.y})`;
           if(new_cells[key]) {
-            new_cells[key] = {...new_cells[key], state: "movearea"};
+            // new_cells[key] = {...new_cells[key], state: "movearea"};
+            new_cells[key] = new_cells[key].movearea_ed();
           }
       });
       return {

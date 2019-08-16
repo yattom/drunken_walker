@@ -81,6 +81,15 @@ export const Model = {
     }, {});
   },
 
+  empty_cells: function(cells) {
+    const new_cells = {};
+    Object.entries(cells).forEach((e) => {
+      const key = e[0];
+      const cell = e[1];
+      new_cells[key] = cell.emptied();
+    });
+    return new_cells;
+  }
 };
 
 export class Board extends React.Component {
@@ -111,24 +120,12 @@ export class Board extends React.Component {
       }
     });
     if(!movable) {
-      const new_cells = {};
-      Object.entries(this.state.cells).forEach((e) => {
-        const key = e[0];
-        const cell = e[1];
-        new_cells[key] = cell.emptied();
-      });
       this.setState((state) => ({
-        cells: new_cells,
+        cells: Model.empty_cells(this.state.cells),
         selection: null,
       }));
       return;
     }
-    const new_cells = {};
-    Object.entries(this.state.cells).forEach((e) => {
-      const key = e[0];
-      const cell = e[1];
-      new_cells[key] = cell.emptied();
-    });
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {
         if (walker.name === this.state.selection.walker_name) {
@@ -137,7 +134,7 @@ export class Board extends React.Component {
           return walker;
         }
       }),
-      cells: new_cells,
+      cells: Model.empty_cells(this.state.cells),
     }));
   }
 
@@ -182,11 +179,11 @@ export class Board extends React.Component {
   render() {
     const cells = Object.entries(this.state.cells).map(entry => {
       const row = entry[1];
-      let walker = {};
+      let walker_props = {};
       const content = this.find_content(row.x, row.y);
       if (content) {
         if (content.type === "walker") {
-          walker = {
+          walker_props = {
             color: content.content.color,
             state: content.content.state,
             name: content.content.name,
@@ -197,15 +194,15 @@ export class Board extends React.Component {
         }
       }
       return (
-        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker}
+        <Cell key={row.key} x={row.x} y={row.y} state={row.state} content={walker_props}
               onClick={() => {
                 this.move_walker(row.x, row.y);
               }}
         >
           {
-            walker.color === "R" ?
-              <Walker onClick={walker.onClick} color={walker.color} name={walker.name}
-                      state={walker.state}/> : ""
+            walker_props.color === "R" ?
+              <Walker onClick={walker_props.onClick} color={walker_props.color} name={walker_props.name}
+                      state={walker_props.state}/> : ""
           }
         </Cell>
       );

@@ -38,24 +38,15 @@ class Dir {
 
 const Model = {
   Walker: class {
-    constructor(name, x, y, color, state) {
+    constructor(name, x, y, color) {
       this.name = name;
       this.x = x;
       this.y = y;
       this.color = color;
-      this.state = state;
     }
 
     moved(x, y) {
-      return new Model.Walker(this.name, x, y, this.color, "unselected");
-    }
-
-    selected() {
-      return new Model.Walker(this.name, this.x, this.y, this.color, "selected");
-    }
-
-    unselected() {
-      return new Model.Walker(this.name, this.x, this.y, this.color, "unselected");
+      return new Model.Walker(this.name, x, y, this.color);
     }
   },
 
@@ -90,14 +81,17 @@ export class Board extends React.Component {
     this.state = {
       cells: Model.build_cells(5),
       walkers: [
-        new Model.Walker("R01", 1, 0, "R", "unselected"),
-        new Model.Walker("R02", 2, 0, "R", "unselected"),
+        new Model.Walker("R01", 1, 0, "R"),
+        new Model.Walker("R02", 2, 0, "R"),
       ],
-      selected_flag: false,
+      selection: null,
     };
   }
 
   move_walker(x, y) {
+    if(this.state.selection == null) {
+      return;
+    }
     let movable = false;
     Object.entries(this.state.cells).forEach((e) => {
       const cell = e[1];
@@ -115,13 +109,14 @@ export class Board extends React.Component {
       });
       this.setState((state) => ({
         walkers: state.walkers.map((walker) => {
-          if (walker.state === "selected") {
-            return walker.unselected();
+          if (walker.name === this.state.selection.walker_name) {
+            return walker;
           } else {
             return walker;
           }
         }),
         cells: new_cells,
+        selection: null,
       }));
       return;
     }
@@ -132,7 +127,7 @@ export class Board extends React.Component {
     });
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {
-        if (walker.state === "selected") {
+        if (walker.name === this.state.selection.walker_name) {
           return walker.moved(x, y);
         } else {
           return walker;
@@ -143,10 +138,12 @@ export class Board extends React.Component {
   }
 
   select_walker(x, y) {
+    let walker_name = "";
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {
         if (walker.x === x && walker.y === y) {
-          return walker.selected();
+          walker_name = walker.name;
+          return walker;
         } else {
           return walker;
         }
@@ -163,7 +160,7 @@ export class Board extends React.Component {
       });
       return {
         cells: new_cells,
-        selected_flag: true,
+        selection: {x: x, y: y, walker_name: walker_name},
       };
     });
   }

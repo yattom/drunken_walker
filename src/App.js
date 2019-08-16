@@ -53,6 +53,10 @@ const Model = {
     selected() {
       return new Model.Walker(this.name, this.x, this.y, this.color, "selected");
     }
+
+    unselected() {
+      return new Model.Walker(this.name, this.x, this.y, this.color, "unselected");
+    }
   },
 
   Cell: class {
@@ -89,14 +93,42 @@ export class Board extends React.Component {
         new Model.Walker("R01", 1, 0, "R", "unselected"),
         new Model.Walker("R02", 2, 0, "R", "unselected"),
       ],
+      selected_flag: false,
     };
   }
 
   move_walker(x, y) {
+    let movable = false;
+    Object.entries(this.state.cells).forEach((e) => {
+      const cell = e[1];
+      if(cell.x == x && cell.y == y) {
+        if(cell.state === "movearea") {
+          movable = true;
+        }
+      }
+    });
+    if(!movable) {
+      const new_cells = {...this.state.cells};
+      Object.entries(new_cells).forEach((e) => {
+        const cell = e[1];
+        cell.state = "empty";
+      });
+      this.setState((state) => ({
+        walkers: state.walkers.map((walker) => {
+          if (walker.state === "selected") {
+            return walker.unselected();
+          } else {
+            return walker;
+          }
+        }),
+        cells: new_cells,
+      }));
+      return;
+    }
     const new_cells = {...this.state.cells};
     Object.entries(new_cells).forEach((e) => {
-      const value = e[1];
-      value.state = "empty";
+      const cell = e[1];
+      cell.state = "empty";
     });
     this.setState((state) => ({
       walkers: state.walkers.map((walker) => {
@@ -118,7 +150,7 @@ export class Board extends React.Component {
         } else {
           return walker;
         }
-      })
+      }),
     }));
 
     this.setState((state) => {
@@ -130,7 +162,8 @@ export class Board extends React.Component {
           }
       });
       return {
-        cells: new_cells
+        cells: new_cells,
+        selected_flag: true,
       };
     });
   }

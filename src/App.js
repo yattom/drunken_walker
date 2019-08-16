@@ -110,20 +110,11 @@ export class Board extends React.Component {
     if(this.state.selection == null) {
       return;
     }
-    let movable = false;
-    Object.entries(this.state.cells).forEach((e) => {
-      const cell = e[1];
-      if(cell.x == x && cell.y == y) {
-        if(cell.state === "movearea") {
-          movable = true;
-        }
-      }
-    });
-    if(!movable) {
+    if(!this.state.selection.movearea[[x, y]]) {
       this.setState((state) => ({
-        cells: Model.empty_cells(this.state.cells),
         selection: null,
       }));
+
       return;
     }
     this.setState((state) => ({
@@ -134,7 +125,7 @@ export class Board extends React.Component {
           return walker;
         }
       }),
-      cells: Model.empty_cells(this.state.cells),
+      selection: null,
     }));
   }
 
@@ -147,17 +138,8 @@ export class Board extends React.Component {
     });
 
     this.setState((state) => {
-      const new_cells = {...state.cells};
-      Dir.all(x, y).forEach((v) => {
-          const key = `(${v.x},${v.y})`;
-          if(new_cells[key]) {
-            // new_cells[key] = {...new_cells[key], state: "movearea"};
-            new_cells[key] = new_cells[key].movearea_ed();
-          }
-      });
       const movearea = Dir.all(x, y).reduce((p, c) => { p[[c.x, c.y]] = 1; return p; }, {});
       return {
-        cells: new_cells,
         selection: {x: x, y: y, walker_name: walker_name, movearea: movearea},
       };
     });
